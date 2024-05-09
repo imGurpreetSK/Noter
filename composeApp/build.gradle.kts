@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.sqldelight)
 }
 
 kotlin {
@@ -27,11 +28,6 @@ kotlin {
     }
     
     sourceSets {
-        
-        androidMain.dependencies {
-            implementation(libs.compose.ui.tooling.preview)
-            implementation(libs.androidx.activity.compose)
-        }
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -39,6 +35,23 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+
+            implementation(libs.kotlinx.datetime)
+
+            implementation(libs.square.sqldelight.runtime)
+        }
+        commonTest.dependencies {
+            implementation(kotlin("test"))
+        }
+
+        androidMain.dependencies {
+            implementation(libs.compose.ui.tooling.preview)
+            implementation(libs.androidx.activity.compose)
+            implementation(libs.square.sqldelight.driver.android)
+        }
+
+        iosMain.dependencies {
+            implementation(libs.square.sqldelight.driver.native)
         }
     }
 }
@@ -72,8 +85,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     dependencies {
+        coreLibraryDesugaring(libs.android.desugaring)
         debugImplementation(libs.compose.ui.tooling)
     }
 }
-
